@@ -42,6 +42,7 @@ In [`src/box_with_lid/config.py`](../../src/box_with_lid/config.py):
 | `wall` / `floor` | 3.6 / 2.4 mm | 6 and 4 nozzle widths |
 | `lip_height` / `lip_clearance` | 3 / 0.2 mm | locating fit |
 | `screw_length` | 12 mm | M3 socket head, `src/hardware.py` |
+| `outer_fillet_r` / `top_fillet_r` / `bed_chamfer` | 3 / 2 / 1 mm | vertical corners and lid top rounded; box bottom chamfered at 45°; the lid/box seam stays sharp so the two read as one wall |
 
 ## Print strategy
 

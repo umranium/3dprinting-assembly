@@ -16,6 +16,7 @@ from build123d import (
     Part,
     Rectangle,
     add,
+    chamfer,
     extrude,
     fillet,
 )
@@ -85,6 +86,7 @@ def create_box() -> Part:
     with BuildPart() as p:
         Box(config.length, config.width, config.wall_height, align=(Align.CENTER, Align.CENTER, Align.MIN))
         fillet(p.edges().filter_by(Axis.Z), radius=config.outer_fillet_r)
+        chamfer(p.edges().group_by(Axis.Z)[0], length=config.bed_chamfer)
         with Locations((0, 0, config.floor)):
             Box(
                 inner_length,
@@ -133,6 +135,7 @@ def create_lid() -> Part:
         with Locations((0, 0, config.wall_height)):
             Box(config.length, config.width, config.lid_thickness, align=(Align.CENTER, Align.CENTER, Align.MIN))
         fillet(p.edges().filter_by(Axis.Z), radius=config.outer_fillet_r)
+        fillet(p.edges().group_by(Axis.Z)[-1], radius=config.top_fillet_r)
         with BuildSketch(Location((0, 0, config.wall_height))):
             Rectangle(groove_outer_length, groove_outer_width)
             Rectangle(groove_inner_length, groove_inner_width, mode=Mode.SUBTRACT)

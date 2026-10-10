@@ -14,6 +14,10 @@ wall_height = 35.0  # mm, floor of the box to the top of its walls
 wall = 3.6  # mm, six 0.6 mm perimeters
 floor = 2.4  # mm
 outer_fillet_r = 3.0  # mm, the vertical outside corners of box and lid
+top_fillet_r = 2.0  # mm, the lid's top outer edge
+# The box's bottom outer edge sits on the bed, where a fillet would be an overhang; a 45° chamfer
+# builds up from the bed unsupported. The lid/box seam is left sharp so the two read as one wall.
+bed_chamfer = 1.0  # mm
 
 # A locating lip stands up from the inner half of the wall's top and drops into a matching groove
 # under the lid. It is what stops the lid sliding or twisting on the box, so the screws only ever
