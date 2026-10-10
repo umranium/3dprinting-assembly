@@ -34,8 +34,7 @@ Each assembly is independent and isolated within the corresponding subdirectorie
 │   └── {assembly}/
 │       ├── REQUIREMENTS.md  # Must-have / nice-to-have requirements for the assembly
 │       ├── README.md        # Detailed specification for the assembly
-│       ├── VISUAL_INSPECTION_CHECKLIST.md # Assembly-specific checklist (high-level requirements)
-│       └── VISUAL_INSPECTION_CHECKLIST_DETAILED.md # Generated: per-requirement render commands + pass/fail criteria
+│       └── VISUAL_INSPECTION_CHECKLIST.md # Assembly-specific checklist (high-level requirements)
 │
 └── export/                  # Exported CAD Files
     └── {assembly}/          # Exports for a specific assembly (.3mf, .step, .jpg, etc.)
@@ -134,7 +133,7 @@ Perform visual verification by rendering views and checking them against both gl
 - Global requirements: [`docs/VISUAL_INSPECTION_CHECKLIST.md`](docs/VISUAL_INSPECTION_CHECKLIST.md)
 - Assembly-specific checklist: `docs/{assembly}/VISUAL_INSPECTION_CHECKLIST.md`
 
-These high-level checklists are broken down into `docs/{assembly}/VISUAL_INSPECTION_CHECKLIST_DETAILED.md` — a generated, per-requirement checklist of exact render commands and explicit pass/fail criteria, produced by the `visual-inspection-planner` subagent and then executed by the `visual-inspector` subagent (see [`CLAUDE.md`](CLAUDE.md) for the full workflow).
+The `visual-inspector` subagent verifies these checklists directly, choosing and rendering the views each item needs (see [`CLAUDE.md`](CLAUDE.md) for the full workflow).
 
 ### Git Pre-Commit Hook
 You can automatically run type checking and unit tests before every commit by installing the pre-commit hook:

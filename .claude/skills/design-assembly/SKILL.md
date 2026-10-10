@@ -233,8 +233,8 @@ Let the user confirm the design before continuing.
    `docs/{assembly}/VISUAL_INSPECTION_CHECKLIST.md` for any new qualitative criterion. A lesson
    that generalises to other assemblies belongs in the workspace-wide
    `docs/VISUAL_INSPECTION_CHECKLIST.md` instead. Keeping the checklist current is all that is
-   owed here: **never run the `visual-inspection-planner` or `visual-inspector` subagents unless
-   the user explicitly asks for visual inspection**, and do not offer them. Rendering images
+   owed here: **never run the `visual-inspector` subagent unless the user explicitly asks for
+   visual inspection**, and do not offer it. Rendering images
    yourself for the loop in Phase 3 is unaffected.
 4. **Geometry snapshot**: an intentional shape change fails the snapshot check until the baseline
    is republished. Publish first (`./run-publish-snapshot.sh`), then commit.
