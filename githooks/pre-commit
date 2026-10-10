@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Git pre-commit hook to run type checks and tests.
+# Aborts the commit if either script fails.
+
+set -e
+
+HOOK_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+WORKSPACE_DIR="$HOOK_DIR"
+while [ "$WORKSPACE_DIR" != "/" ] && [ ! -f "$WORKSPACE_DIR/run-main.sh" ]; do
+    WORKSPACE_DIR="$(dirname "$WORKSPACE_DIR")"
+done
+
+if [ ! -f "$WORKSPACE_DIR/run-main.sh" ]; then
+    echo "Error: Could not locate workspace root."
+    exit 1
+fi
+cd "$WORKSPACE_DIR"
+
+echo "============================================="
+echo "🔍 Running pre-commit validation checks..."
+echo "============================================="
+
+# 1. Code Formatting & Linting Check
+echo "Running code formatting and lint checks..."
+./run-format.sh --check
+
+# 2. Type Check
+echo "Running static type checks..."
+./run-typecheck.sh
+
+# 3. Tests
+echo "Running unit tests..."
+./run-tests.sh
+
+echo "============================================="
+echo "✅ All checks passed! Committing changes..."
+echo "============================================="

@@ -1,0 +1,3 @@
+# Pyrefly Configuration
+# Add the project root to the search path to resolve "src.*" imports
+search-path = ["."]

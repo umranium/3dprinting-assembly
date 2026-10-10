@@ -1,0 +1,26 @@
+{
+  "venvPath": ".",
+  "venv": ".venv",
+  "typeCheckingMode": "standard",
+  "include": [
+    "src",
+    "tests"
+  ],
+  "reportUnusedImport": "error",
+  "reportDuplicateImport": "error",
+  "reportUnusedVariable": "error",
+  "reportUnusedFunction": "error",
+  "reportUnusedClass": "error",
+  "reportAssertAlwaysTrue": "error",
+  "reportUnreachable": "error",
+  "reportInvalidStringEscapeSequence": "error",
+  "reportConstantRedefinition": "error",
+  "reportImplicitStringConcatenation": "error",
+  "reportDeprecated": "warning",
+  "reportMissingSuperCall": "warning",
+  "executionEnvironments": [
+    {
+      "root": "."
+    }
+  ]
+}

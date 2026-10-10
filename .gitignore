@@ -1,0 +1,32 @@
+# Virtual environment
+.venv/
+env/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Testing
+.pytest_cache/
+
+# Local cache of downloaded GitHub Release geometry-snapshot baselines (see tests/geometry_snapshot.py)
+.cache/
+
+# Exports & Generated Artifacts
+*.stl
+*.svg
+
+# Everything generated into export/ (3mf, step, jpg, png, ...) is build output
+export/
+
+
+# Temporary / diagnostic files
+find_svg.py
+run-python.py
+test_svg.py
+
+# System files
+.DS_Store
