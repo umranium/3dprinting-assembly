@@ -40,5 +40,7 @@ This checklist defines the global visual criteria and modeling standards that ap
 ## 4. Finishing, Ergonomics, & Boundary Confinement
 
 - [ ] **Edge Treatments**: External perimeter edges and exposed corners feature smooth fillets or chamfers to eliminate sharp edges.
+  - Edges lying on the print bed are chamfered at 45°, not filleted: a fillet on a bed edge is an overhang.
+  - Two exceptions stay sharp on purpose: an inside corner a mating part sits in (rounding it would lift the part off its seat), and a flush seam between two bodies, where the outlines should read as one continuous wall.
 - [ ] **Feature Boundary Confinement**: Surface features (text, logos, inlays, icons) sit comfortably within flat planar regions and do not cross or bleed into perimeter chamfers, fillets, or outer part boundaries.
 - [ ] **No Artifacts / Stray Geometry**: Assemblies and individual parts are free from unexpected sliver walls, floating disconnected bodies, phantom shells, or leftover boolean cutting remnants.
