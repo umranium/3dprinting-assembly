@@ -34,6 +34,13 @@ backrest_length = 80.0  # mm, along the lean, from the groove floor up
 # without binding on a slightly over-thick case.
 lip_clearance = 1.0  # mm
 
+# Edge treatments. Every outside corner of the side profile, the window's corners and the top
+# (+X) end face are rounded. The -X end face is on the bed, where a fillet would be an overhang,
+# so it gets a 45° chamfer instead. The concave corners the phone sits in are left sharp: a fillet
+# there would lift the phone's bottom edge off the groove floor.
+edge_fillet_r = 2.0  # mm
+bed_chamfer = 1.0  # mm
+
 # Where the phone's back-bottom corner meets the groove floor. The backrest's front face starts
 # here and runs up the lean.
 groove_back_y = -20.0  # mm

@@ -1,5 +1,7 @@
 """Desk phone stand: one printed body in two colours, holding a modelled phone."""
 
+import math
+
 from build123d import (
     Align,
     Axis,
@@ -13,7 +15,10 @@ from build123d import (
     Part,
     Plane,
     Polygon,
+    add,
+    chamfer,
     extrude,
+    fillet,
 )
 
 from src.exporter import part_choices
@@ -32,23 +37,16 @@ PART_CHOICES: dict[str, set[str]] = part_choices(PART_NAMES)
 STAND_DOWN = DOWN_MINUS_X
 
 
-def _extrude_profile(points: list[tuple[float, float]], holes: tuple[list[tuple[float, float]], ...] = ()) -> Part:
-    """Extrude a (Y, Z) side-view profile across the stand's full width, centred on X=0."""
-    with BuildPart() as p:
-        with BuildSketch(Plane.YZ) as s:
-            Polygon(*points, align=None)
-            for hole in holes:
-                Polygon(*hole, align=None, mode=Mode.SUBTRACT)
-        extrude(s.sketch, amount=config.stand_width / 2.0, both=True)
-    assert p.part is not None
-    return p.part
+def _top_z() -> float:
+    return config.floor_z + config.lip_height
 
 
-@body("Stand", STAND_DOWN)
-def create_stand() -> Part:
-    """Base, backrest and rear strut as one triangulated frame, with the groove the phone stands
-    in. The lip in front of the groove is a separate part (see create_lip) only so it can take a
-    second colour; it fuses into this same printed body."""
+def _stand_with_lip() -> Part:
+    """The whole printed body, stand and lip together, with its edges treated.
+
+    The edges are treated on the combined shape and only then split into stand and lip, so the
+    rounding runs unbroken across the colour seam on the front face."""
+    top_z = _top_z()
     outline = [
         (config.base_front_y, 0.0),
         (config.base_back_y, 0.0),
@@ -56,24 +54,64 @@ def create_stand() -> Part:
         config.BACKREST_BACK_TOP,
         config.BACKREST_FRONT_TOP,
         config.BACKREST_FRONT_BOTTOM,
-        (config.base_front_y, config.floor_z),
+        (config.lip_inner_y, config.floor_z),
+        (config.lip_inner_y, top_z),
+        (config.base_front_y, top_z),
     ]
-    return _extrude_profile(outline, holes=(config.WINDOW,))
+    # The two corners the phone sits in stay sharp; see config.edge_fillet_r. Sketch vertices are
+    # in the sketch plane's own frame, where (X, Y) is the profile's (Y, Z).
+    sharp = (config.BACKREST_FRONT_BOTTOM, (config.lip_inner_y, config.floor_z))
+    with BuildPart() as p:
+        with BuildSketch(Plane.YZ) as s:
+            Polygon(*outline, align=None)
+            Polygon(*config.WINDOW, align=None, mode=Mode.SUBTRACT)
+            fillet(
+                [v for v in s.vertices() if all(math.dist((v.X, v.Y), c) > 1e-6 for c in sharp)],
+                radius=config.edge_fillet_r,
+            )
+        extrude(s.sketch, amount=config.stand_width / 2.0, both=True)
+        fillet(p.faces().sort_by(Axis.X)[-1].edges(), radius=config.edge_fillet_r)
+        chamfer(p.faces().sort_by(Axis.X)[0].edges(), length=config.bed_chamfer)
+    assert p.part is not None
+    return p.part
+
+
+def _split(mode: Mode) -> Part:
+    """The treated body with the lip region subtracted (the stand) or intersected (the lip)."""
+    # Both shapes are made before entering the builder: a Box made inside one adds itself to it.
+    whole, region = _stand_with_lip(), _lip_region()
+    with BuildPart() as p:
+        add(whole)
+        add(region, mode=mode)
+    assert p.part is not None
+    return p.part
+
+
+def _lip_region() -> Part:
+    """A block enclosing the lip and nothing else, used to split it from the stand."""
+    margin = 1.0
+    front_y = config.base_front_y - margin
+    return Box(
+        config.stand_width + 2 * margin,
+        config.lip_inner_y - front_y,
+        _top_z() + margin - config.floor_z,
+        align=(Align.CENTER, Align.MIN, Align.MIN),
+    ).moved(Location((0, front_y, config.floor_z)))
+
+
+@body("Stand", STAND_DOWN)
+def create_stand() -> Part:
+    """Base, backrest and rear strut as one triangulated frame, with the groove the phone stands
+    in. The lip in front of the groove is a separate part (see create_lip) only so it can take a
+    second colour; it fuses into this same printed body."""
+    return _split(Mode.SUBTRACT)
 
 
 @body("Stand", STAND_DOWN)
 def create_lip() -> Part:
     """The front lip that stops the phone sliding off the groove: a contrasting-colour strip
     standing on the base's front edge."""
-    top_z = config.floor_z + config.lip_height
-    return _extrude_profile(
-        [
-            (config.base_front_y, config.floor_z),
-            (config.lip_inner_y, config.floor_z),
-            (config.lip_inner_y, top_z),
-            (config.base_front_y, top_z),
-        ]
-    )
+    return _split(Mode.INTERSECT)
 
 
 @non_printable

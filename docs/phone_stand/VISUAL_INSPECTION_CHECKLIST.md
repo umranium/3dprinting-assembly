@@ -20,6 +20,8 @@ visual conditions; dimensions are validated by unit tests.
 - [ ] **Stable Footprint**: The base runs well behind the phone's lean, giving a visibly wide stance.
 - [ ] **Two-Colour Lip**: The lip shows in its own colour, flush with the base's front edge and
   sitting directly on the base with no step or gap.
+- [ ] **Rounding Across the Colour Seam**: The rounded and chamfered edges on the front face and end
+  faces run unbroken from the base into the lip, with no notch or step at the colour change.
 
 ## 3. Printability
 

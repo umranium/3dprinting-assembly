@@ -12,6 +12,8 @@ the front that the phone's bottom edge stands in, held by a contrasting-colour l
 - **A modelled reference object.** The `Phone` is a `@non_printable` slab at its worst-case size,
   leaned against the backrest. It is never trimmed against the stand, so the collision suite would
   catch a groove or lip that is too tight.
+- **Edges treated before the colour split.** The stand and lip are built and rounded as one
+  shape, then split, so the rounding runs unbroken across the colour seam.
 - **A free print orientation.** The whole side profile is extruded across the stand's width and
   prints lying on its end face (`DOWN_MINUS_X`): a constant cross-section with no overhangs.
 
@@ -37,6 +39,7 @@ In [`src/phone_stand/config.py`](../../src/phone_stand/config.py):
 | `lean_deg` | 25° | assumed |
 | `stand_width` | 70 mm | narrower than the phone, so buttons stay clear |
 | `wall` / `base_thickness` / `lip_thickness` | 6 / 5 / 5 mm | strength |
+| `edge_fillet_r` / `bed_chamfer` | 2 / 1 mm | profile corners, window and top end rounded; bed end chamfered at 45°; the groove's two corners stay sharp so the phone seats |
 
 ## Print strategy
 
