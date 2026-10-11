@@ -2,6 +2,41 @@
 
 This project is configured as a multi-assembly workspace designed to support building, testing, documenting, and exporting multiple independent 3D assemblies.
 
+## Why This Approach
+
+The workspace is built so that an LLM can design 3D-printable parts that work on the first print.
+LLMs are good at writing code but bad at reasoning about 3D space, and they cannot see what a
+printer will do. So the repo never trusts the model's spatial judgement: every claim about geometry
+is checked by code, by a render, or by the user.
+
+- **CAD as code** — designs are parametric Python (build123d), the medium an LLM is strongest in.
+  Every change is a reviewable diff in git, not an edit inside a binary CAD file.
+- **Requirements before geometry** — the `design-assembly` skill makes the model ask what the part
+  touches and how people handle it, then write `docs/{assembly}/REQUIREMENTS.md` *before* any code.
+  Unanswered questions get recorded as assumptions instead of being guessed silently in the model.
+- **Cheap validation first** — the datum, a dimension table, ASCII cross-sections and print
+  orientation are agreed in chat before any modelling. Fixing a diagram costs one message; fixing a
+  model costs an hour.
+- **Look, don't reason** — the model renders shaded and wireframe images to confirm orientation and
+  shape, and checks clearances with real numbers (bounding boxes, volumes), since perspective renders
+  can mislead. One change per render cycle; after two failed fixes it stops and asks.
+- **Automated print checks as feedback** — build volume, bed stability, unsupported layers,
+  collisions and single-solid bodies are checked on every assembly automatically. The model gets
+  a concrete failure to fix instead of a print that fails hours later.
+- **Thresholds that can fail** — printability limits come from published guidance and the printer's
+  nozzle size, never from numbers back-fitted to existing parts. The model can't make a check pass
+  by loosening it.
+- **Mating objects are modelled** — whatever the part clamps, holds or rests on is modelled at its
+  real size, so collision checks can prove the fit instead of showing a part holding thin air.
+- **Proven building blocks** — screws, nuts and their cutouts come from `src/hardware.py`, and print
+  orientation and bed layout are handled once in `src.printer`. The model reuses tested pieces
+  instead of re-deriving tolerances or rotations, which is where it slips most often.
+- **Guardrails against drift** — geometry snapshots catch any unintended shape change, and the
+  publish step always needs the user's approval. Tests and type checks run through subagents, and
+  the pre-commit hook blocks failing code.
+- **Human gates at each phase** — the user approves the requirements, the sketch and the rendered
+  design before tests and docs are finalised. Faults from real prints go back into the requirements.
+
 ## Project Layout
 
 Each assembly is independent and isolated within the corresponding subdirectories:
